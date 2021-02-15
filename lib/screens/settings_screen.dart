@@ -13,7 +13,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'AlwaysOn': false,
   };
   String _ip = '192.168.29.181';
-
+  Color _sliderBackgroundColor = Colors.white;
   sendResponse() async {
     try {
       if (_ip != null) {
@@ -63,11 +63,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   Switch(
                     value: userSettings['AlwaysOn'],
+                    inactiveThumbColor: _sliderBackgroundColor,
                     inactiveTrackColor: Colors.white54,
                     onChanged: (value) async {
                       if (await sendResponse()) {
                         userSettings['AlwaysOn'] = value;
+                        _sliderBackgroundColor = Colors.white54;
                       } else {
+                        _sliderBackgroundColor = Colors.red;
                         print('no switch');
                       }
                       setState(() {
