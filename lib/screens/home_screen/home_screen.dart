@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _status = 'Toggle to get status';
   String _toggleBell = 'OFF';
   IconData _bellIcon = CupertinoIcons.bell;
+  Color _bellBackgroundColor = Colors.white54;
 
   sendResponse() async {
     try {
@@ -29,20 +30,25 @@ class _HomeScreenState extends State<HomeScreen> {
           _status =
               'Response status: ${response.statusCode} - Request Sent\nResponse body: ${response.body}\nResponse Status:\nbell status $_toggleBell';
           _toggleBell = response.body;
-          print('both text set');
+
           setState(() {});
+          return true;
         } else {
-          setState(() {});
           _status =
               'Could not get Response. Possible issues:\n1. NodeMCU Power Down\nSol: Turn on Power of NodeMCU and Press Reset pin\n2. NodeMCU Not connected to WIFI\nSol: Re-start NodeMCU and press Hard Reset pin\n3. IP Address of NodeMCU is changed\nSol: Change the IP Address and add correct IP for NodeMCU';
+          setState(() {});
+          return false;
         }
       } else {
         _status = 'IP Address is Empty!';
+        setState(() {});
+        return false;
       }
     } catch (err) {
       setState(() {});
       _status =
           'Could not get Response. Possible issues:\n1. NodeMCU Power Down\nSol: Turn on Power of NodeMCU and Press Reset pin\n2. NodeMCU Not connected to WIFI\nSol: Re-start NodeMCU and press Hard Reset pin\n3. IP Address of NodeMCU is changed\nSol: Change the IP Address and add correct IP for NodeMCU\n\nDetails-\n$err';
+      return false;
     }
   }
 
@@ -99,17 +105,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(left: 95, right: 95, top: 50),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2000),
-                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(200),
+                    color: _bellBackgroundColor,
                   ),
                   child: GestureDetector(
                     onTapDown: (v) async {
-                      _bellIcon = CupertinoIcons.bell_solid;
-                      await sendResponse();
+                      if (await sendResponse()) {
+                        setState(() {
+                          _bellIcon = CupertinoIcons.bell_solid;
+                          _bellBackgroundColor = Colors.white54;
+                        });
+                      } else {
+                        print('no good');
+                        setState(() {
+                          _bellBackgroundColor = Colors.red.withOpacity(0.6);
+                        });
+                      }
                     },
                     onTapUp: (v) async {
-                      await sendResponse();
-                      _bellIcon = CupertinoIcons.bell;
+                      if (await sendResponse()) {
+                        setState(() {
+                          _bellIcon = CupertinoIcons.bell;
+                          _bellBackgroundColor = Colors.white54;
+                        });
+                      } else {
+                        print('No good');
+                        setState(() {
+                          _bellBackgroundColor = Colors.red.withOpacity(0.6);
+                        });
+                      }
                     },
                     child: Icon(
                       _bellIcon,
