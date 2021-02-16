@@ -56,24 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(right: 10, top: 10),
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, SettingsScreen.routeName);
-                },
-                icon: Icon(
-                  Icons.settings,
-                  color: Colors.white70,
-                  size: 30,
-                ),
-              ),
-            ),
-            Column(
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
@@ -81,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     '101',
                     style: TextStyle(
-                      fontSize: 120,
+                      fontSize: 150,
                       color: Colors.white54,
                       fontFamily: 'gilroy',
                     ),
@@ -122,6 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       }
                     },
+                    onHorizontalDragUpdate: null,
+                    onVerticalDragUpdate: null,
                     onTapUp: (v) async {
                       if (await sendResponse()) {
                         setState(() {
@@ -144,15 +132,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            // Container(
-            //   alignment: Alignment.bottomCenter,
-            //   child: Text(
-            //     _status,
-            //     style: TextStyle(color: Colors.white24, fontSize: 7),
-            //   ),
-            // ),
-          ],
-        ),
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 3, top: 20),
+            alignment: Alignment.topRight,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, SettingsScreen.routeName);
+              },
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white70,
+                size: 30,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
